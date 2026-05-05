@@ -1,36 +1,59 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Instivo - Teste Front-end
 
-## Getting Started
+Sistema de cadastro de endereços com validação automática via CEP.
 
-First, run the development server:
+## Objetivo
+
+Gerenciar e organizar cadastros de endereços com preenchimento automático através da API ViaCEP, reduzindo erros e melhorando a experiência do usuário.
+
+## Stack Tecnológico
+
+| Tecnologia          | Razão                                              |
+| ------------------- | -------------------------------------------------- |
+| **Next.js 15**      | Full-stack com API routes nativas                  |
+| **React 19**        | Components otimizados e Server Components          |
+| **TypeScript**      | Type-safety e melhor DX                            |
+| **Zod**             | Validação de schemas sincronizada frontend/backend |
+| **React Hook Form** | Gerenciamento de formulários leve                  |
+| **Tailwind CSS**    | Estilização rápida e consistente                   |
+
+## Decisões Arquiteturais
+
+- **Persistência**: Arquivo JSON
+- **Validação**: Camadas duplas (Frontend + Backend)
+- **API**: REST simples (GET/POST em `/api/cep-records`)
+- **Mascaramento**: CEP automático no formato XXXXX-XXX
+
+## Funcionalidades
+
+- ✅ Cadastro com validação em tempo real
+- ✅ Busca automática de CEP via ViaCEP
+- ✅ Preenchimento automático de cidade/bairro/estado
+- ✅ Fallback manual quando CEP não encontrado
+- ✅ Histórico de endereços registrados
+
+## Setup
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev        # Desenvolvimento
+npm run build      # Build
+npm test          # Testes
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Acesse [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Estrutura
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+src/
+├── app/api/cep-records/    → Endpoints GET/POST
+├── components/             → Formulário, lista, cards
+└── lib/                    → Schema, validação, storage
+```
 
-## Learn More
+## 👨‍💻 Desenvolvimento
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**Desenvolvido por**: Laila Silva  
+**Stack**: Next.js 15 • React 19 • TypeScript • Tailwind CSS  
+**Última atualização**: Maio 2026
