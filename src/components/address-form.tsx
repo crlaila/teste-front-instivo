@@ -66,8 +66,8 @@ export default function AddressForm() {
         if (!result.ok) {
           const messages = {
             'not-found': 'CEP não encontrado. Preencha o endereço manualmente.',
-            'network': 'Falha ao consultar o CEP. Tente novamente.',
-            'invalid': 'CEP inválido',
+            network: 'Falha ao consultar o CEP. Tente novamente.',
+            invalid: 'CEP inválido',
           };
           toast.error(messages[result.reason]);
 
@@ -182,7 +182,9 @@ export default function AddressForm() {
         {cepNotFound && (
           <div className="flex items-center gap-2 rounded-md bg-amber-50 p-3 text-sm text-amber-900 border border-amber-200">
             <span>⚠️</span>
-            <span>CEP não encontrado. Preencha os campos abaixo manualmente.</span>
+            <span>
+              CEP não encontrado. Preencha os campos abaixo manualmente.
+            </span>
           </div>
         )}
 
@@ -208,7 +210,7 @@ export default function AddressForm() {
               id="numero"
               placeholder="123"
               inputMode="numeric"
-              className="mt-2 text-center text-lg"
+              className="mt-2"
               error={!!errors.numero}
               {...register('numero')}
             />
@@ -297,7 +299,7 @@ export default function AddressForm() {
         <Button
           type="submit"
           disabled={isSubmitting || cepLoading}
-          className="flex-1 sm:flex-none bg-primary text-white hover:bg-primary/90"
+          className="flex-1 sm:flex-none bg-primary text-black hover:bg-primary/90"
         >
           {isSubmitting ? 'SALVANDO…' : 'SALVAR'}
         </Button>

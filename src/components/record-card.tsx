@@ -9,20 +9,12 @@ export default function RecordCard({ record }: RecordCardProps) {
     ? `${record.logradouro} — ${record.complemento}`
     : record.logradouro;
 
-  const formattedDate = new Date(record.createdAt).toLocaleString('pt-BR');
-
   return (
     <article className="flex flex-col gap-2 rounded-lg border border-border bg-background p-4">
       <div className="flex items-center justify-between gap-3">
-        <span className="inline-flex items-center rounded-md bg-accent px-2 py-0.5 text-xs font-semibold">
+        <span className="inline-flex items-center rounded-sm bg-primary px-2 py-1 text-xs font-semibold text-black">
           {record.cep}
         </span>
-        <time
-          dateTime={record.createdAt}
-          className="text-xs text-muted-foreground"
-        >
-          {formattedDate}
-        </time>
       </div>
       <p className="text-sm font-medium">{addressLine}</p>
       <p className="text-xs text-muted-foreground">
