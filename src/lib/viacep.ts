@@ -1,48 +1,43 @@
+import { isCepValid, extractDigits } from './cep-utils';
+
 export type ViaCepResponse = {
   cep: string;
   logradouro: string;
-  complemento: string;
   bairro: string;
   localidade: string;
   uf: string;
 };
 
-const ERROR_MESSAGES = {
-  INVALID_CEP: 'CEP inválido',
-  NOT_FOUND: 'CEP não encontrado',
-  FETCH_ERROR: 'Erro ao buscar o CEP',
-} as const;
+export type ViaCepReason = 'invalid' | 'not-found' | 'network';
 
-type ApiResponse = {
-  erro?: boolean;
-} & ViaCepResponse;
+export type ViaCepResult =
+  | { ok: true; data: ViaCepResponse }
+  | { ok: false; reason: ViaCepReason };
 
-export async function getCep(cep: string): Promise<ViaCepResponse> {
-  const digits = cep.replace(/\D/g, '');
-
-  if (digits.length !== 8) {
-    throw new Error(ERROR_MESSAGES.INVALID_CEP);
+export async function fetchCep(rawCep: string): Promise<ViaCepResult> {
+  if (!isCepValid(rawCep)) {
+    return { ok: false, reason: 'invalid' };
   }
 
+  const digits = extractDigits(rawCep);
+
   try {
-    const response = await fetch(`https://viacep.com.br/ws/${digits}/json/`, {
-      signal: AbortSignal.timeout(5000),
-    });
+    const response = await fetch(
+      `https://viacep.com.br/ws/${digits}/json/`,
+    );
 
     if (!response.ok) {
-      throw new Error(ERROR_MESSAGES.FETCH_ERROR);
+      return { ok: false, reason: 'network' };
     }
 
-    const data: ApiResponse = await response.json();
+    const data = (await response.json()) as ViaCepResponse & { erro?: boolean };
 
     if (data.erro) {
-      throw new Error(ERROR_MESSAGES.NOT_FOUND);
+      return { ok: false, reason: 'not-found' };
     }
 
-    return data;
-  } catch (error) {
-    throw new Error(
-      error instanceof Error ? error.message : ERROR_MESSAGES.FETCH_ERROR,
-    );
+    return { ok: true, data };
+  } catch {
+    return { ok: false, reason: 'network' };
   }
 }

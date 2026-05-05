@@ -1,32 +1,39 @@
-import { Card } from './ui/card';
+import type { CepRecord } from '@/lib/schema';
+import RecordCard from './record-card';
 
-const MOCK_ADDRESSES = [
-  { id: '1', cep: '32310-010', address: 'Rua dos Bobos, 0 - São Paulo/SP' },
-  { id: '2', cep: '32310-010', address: 'Rua dos Bobos, 0 - São Paulo/SP' },
-  { id: '3', cep: '32310-010', address: 'Rua dos Bobos, 0 - São Paulo/SP' },
-  { id: '4', cep: '32310-010', address: 'Rua dos Bobos, 0 - São Paulo/SP' },
-  { id: '5', cep: '32310-010', address: 'Rua dos Bobos, 0 - São Paulo/SP' },
-];
+export interface RecordListAddressProps {
+  records: CepRecord[];
+}
 
-export default function RecordListAddress() {
+export default function RecordListAddress({ records }: RecordListAddressProps) {
   return (
-    <Card className="w-full">
-      <h2 className="text-lg sm:text-xl font-semibold mb-4">Registros salvos</h2>
+    <section
+      aria-labelledby="records-list-heading"
+      className="flex flex-col gap-4 rounded-lg border border-border bg-card p-5"
+    >
+      <header className="flex items-center justify-between gap-3">
+        <h2
+          id="records-list-heading"
+          className="text-base font-semibold"
+        >
+          Registros salvos
+        </h2>
+        <span className="inline-flex min-w-6 items-center justify-center rounded-md border border-border bg-background px-2 py-0.5 text-xs font-medium text-muted-foreground">
+          {records.length}
+        </span>
+      </header>
 
-      <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        {MOCK_ADDRESSES.map((item) => (
-          <li key={item.id} className="flex flex-col gap-2 border rounded-md p-3 sm:p-4 hover:shadow-md transition-shadow">
-            <span className="inline-flex items-center rounded-md bg-primary px-2 py-1 text-xs font-medium text-black w-fit">
-              {item.cep}
-            </span>
-            <div className="flex items-start gap-2">
-              <span className="text-xs sm:text-sm text-gray-500 line-clamp-2">
-                {item.address}
-              </span>
-            </div>
-          </li>
-        ))}
-      </ul>
-    </Card>
+      {records.length === 0 ? (
+        <p className="text-sm text-muted-foreground">Nenhum endereço salvo ainda.</p>
+      ) : (
+        <ul className="flex flex-col gap-3">
+          {records.map((record) => (
+            <li key={record.id}>
+              <RecordCard record={record} />
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
   );
 }
