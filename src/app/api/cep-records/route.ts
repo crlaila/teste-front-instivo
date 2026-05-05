@@ -1,49 +1,40 @@
 import { NextResponse } from 'next/server';
 
-import { handleApiError } from '@/lib/api-utils';
-import { readRecords, saveRecord } from '@/lib/db';
 import { addressSchema } from '@/lib/schema';
-
-const ERROR_MESSAGES = {
-  READ_FAILURE: 'Failed to read records',
-  INVALID_JSON: 'Invalid JSON in request body',
-  INVALID_DATA: 'Invalid address data',
-  SAVE_FAILURE: 'Failed to save record',
-} as const;
+import { appendRecord, readRecords } from '@/lib/storage';
 
 export async function GET() {
   try {
     const records = await readRecords();
     return NextResponse.json(records);
-  } catch (error: unknown) {
-    return handleApiError(error, ERROR_MESSAGES.READ_FAILURE);
+  } catch (err) {
+    console.error('[api/cep-records] GET failed', err);
+    return NextResponse.json(
+      { error: 'internal' },
+      { status: 500 },
+    );
   }
 }
 
-export async function POST(request: Request) {
-  let body: unknown;
-
-  try {
-    body = await request.json();
-  } catch {
-    return NextResponse.json(
-      { error: ERROR_MESSAGES.INVALID_JSON },
-      { status: 400 },
-    );
-  }
+export async function POST(req: Request) {
+  const body = await req.json().catch(() => null);
 
   const parsed = addressSchema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json(
-      { error: ERROR_MESSAGES.INVALID_DATA, details: parsed.error.issues },
+      { error: 'validation', issues: parsed.error.flatten() },
       { status: 400 },
     );
   }
 
   try {
-    const record = await saveRecord(parsed.data);
+    const record = await appendRecord(parsed.data);
     return NextResponse.json(record, { status: 201 });
-  } catch (error: unknown) {
-    return handleApiError(error, ERROR_MESSAGES.SAVE_FAILURE);
+  } catch (err) {
+    console.error('[api/cep-records] POST failed', err);
+    return NextResponse.json(
+      { error: 'internal' },
+      { status: 500 },
+    );
   }
 }
